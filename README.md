@@ -1,16 +1,57 @@
-# chat_app
+# 📱 PingMe
 
-A new Flutter project.
+PingMe is a full-featured chat application built using **Flutter** and **Firebase**, offering real-time messaging, media sharing, and secure authentication via **Google Sign-In**. Inspired by WhatsApp, PingMe also introduces **PingAI**, an intelligent chatbot powered by the **Gemini API**, designed to assist users with smart replies, information lookup, and more.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🚀 Features
 
-A few resources to get you started if this is your first Flutter project:
+### 🔐 Authentication
+- Google Sign-In using Firebase Authentication
+- Secure user sessions
+- Profile setup with display name and avatar
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### 💬 Messaging
+- One-to-one real-time chat using Firebase Firestore
+- Typing indicators and message read receipts
+- Push notifications via Firebase Cloud Messaging (FCM)
+- Emoji support
+- Voice notes support
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 📁 Media Sharing
+- Send images, videos, documents, and voice notes
+- In-app camera and gallery access
+- Media uploads handled via **Cloudinary**
+- Optimized delivery and transformation of media files
+
+### 🧠 PingAI – AI Chatbot
+- Smart assistant powered by Gemini API
+- Context-aware responses
+- Supports general queries, productivity tips, and casual conversation
+- Seamlessly integrated into the chat interface
+
+### 🔒 Chat Lock with Biometrics
+- Lock specific chats for privacy
+- Unlock chats using device biometrics (Fingerprint/Face ID)
+- Prevents unauthorized access to sensitive conversations
+
+---
+
+## 🧰 Tech Stack
+
+| Layer            | Technology                     |
+|------------------|--------------------------------|
+| Frontend         | Flutter                        |
+| Backend          | Firebase Firestore             |
+| Authentication   | Firebase Auth + Google Sign-In |
+| Notifications    | Firebase Cloud Messaging (FCM) |
+| Media Storage    | Cloudinary                     |
+| AI Integration   | Gemini API                     |
+
+---
+
+## 📸 Screenshots
+
+> _Coming soon..._
+
+---
