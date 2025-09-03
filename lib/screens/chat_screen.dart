@@ -187,31 +187,34 @@ class _ChatScreenState extends State<ChatScreen> {
         ):
         Padding(
           padding: EdgeInsets.only(top:MediaQuery.of(context).size.width * 0.01, left: MediaQuery.of(context).size.width * 0.12),
-          child: Flexible(
-            child: TextField(
-              cursorColor: Colors.purple.shade50,
-              decoration: InputDecoration(
-                hintText: "Search Message",
-                border: InputBorder.none,
-              ),
-              style: TextStyle(
-                fontSize: 18,
-              ),
-              autofocus: true,
-              onChanged: (val){
-                search.clear();
-                for(var message in messages){
-                  if(message.type==Type.text) {
-                    if (APIs.encrypted.decrypt(
-                        Encrypted.fromBase64(message.msg), iv: Secret.iv)
-                        .toString().toLowerCase()
-                        .contains(val.trim().toLowerCase())) {
-                      search.add(message);
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: Flexible(
+              child: TextField(
+                cursorColor: Colors.purple.shade50,
+                decoration: InputDecoration(
+                  hintText: "Search Message",
+                  border: InputBorder.none,
+                ),
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+                autofocus: true,
+                onChanged: (val){
+                  search.clear();
+                  for(var message in messages){
+                    if(message.type==Type.text) {
+                      if (APIs.encrypted.decrypt(
+                          Encrypted.fromBase64(message.msg), iv: Secret.iv)
+                          .toString().toLowerCase()
+                          .contains(val.trim().toLowerCase())) {
+                        search.add(message);
+                      }
                     }
                   }
-                }
-                setState(() {});
-              },
+                  setState(() {});
+                },
+              ),
             ),
           ),
         )
