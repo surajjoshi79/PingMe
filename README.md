@@ -33,7 +33,6 @@ PingMe is a full-featured chat application built using **Flutter** and **Firebas
 ### 🔒 Chat Lock with Biometrics
 - Lock specific chats for privacy
 - Unlock chats using device biometrics (Fingerprint/Face ID)
-- Local secure storage of lock preferences
 - Prevents unauthorized access to sensitive conversations
 
 ---
