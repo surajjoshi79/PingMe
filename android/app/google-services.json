@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "311589812798",
+    "project_id": "pingme-409d8",
+    "storage_bucket": "pingme-409d8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311589812798:android:883cb7faf525494450ef6f",
+        "android_client_info": {
+          "package_name": "com.example.chat_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "311589812798-3r2fsq2i33bneriv24r2j3b8oka0kp52.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chat_app",
+            "certificate_hash": "8b70060235b0e2c1bc735154e07dc552dc246a60"
+          }
+        },
+        {
+          "client_id": "311589812798-lq904ei2vgho7va1rsm08vgrublraekm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB32ekwb-AWjdaLHS2reGuL-jNuaXLJUOs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "311589812798-lq904ei2vgho7va1rsm08vgrublraekm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "311589812798-j6l6tmjbsc15adci353b8ga6jpc81e61.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.chatApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
