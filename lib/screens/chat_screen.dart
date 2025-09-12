@@ -290,7 +290,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         }
                       },
                       decoration: InputDecoration(
-                        hintText: "type anything....",
+                        hintText: "type anything",
                         hintStyle: TextStyle(
                             color: Colors.purple
                         ),
@@ -325,13 +325,21 @@ class _ChatScreenState extends State<ChatScreen> {
             padding: const EdgeInsets.only(bottom: 5, left: 5),
             child: MaterialButton(
               onPressed: () {
-                if (message.text.trim().isNotEmpty) {
-                  APIs.sendMessage(widget.user, message.text.trim());
+                if(!recording){
+                  if (message.text.trim().isNotEmpty) {
+                    APIs.sendMessage(widget.user, message.text.trim());
+                    scrollToBottom();
+                  } else {
+                    Utils.showSnackBar(context, 'Unable to send');
+                  }
+                  message.clear();
+                }else{
+                  setState(() {
+                    recording = !recording;
+                  });
+                  stopRecording();
                   scrollToBottom();
-                } else {
-                  Utils.showSnackBar(context, 'Unable to send');
                 }
-                message.clear();
               },
               elevation: 0.5,
               shape: const CircleBorder(),
