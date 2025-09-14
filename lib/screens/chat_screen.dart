@@ -448,9 +448,9 @@ class _ChatScreenState extends State<ChatScreen> {
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           if(isSearching && search.isEmpty){
-                            return MessageCard(message: messages[index]);
+                            return MessageCard(message: messages[index], user: widget.user);
                           }
-                          return MessageCard(message: isSearching ? search[index]:messages[index]);
+                          return MessageCard(message: isSearching ? search[index]:messages[index], user: widget.user);
                         },
                       ),
                     );

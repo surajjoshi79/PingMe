@@ -1,6 +1,7 @@
 import 'package:chat_app/apis/apis.dart';
 import 'package:chat_app/common/read_time_format.dart';
 import 'package:chat_app/common/utils.dart';
+import 'package:chat_app/models/chat_user.dart';
 import 'package:chat_app/widget/audio_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +15,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class MessageCard extends StatefulWidget {
   final Message message;
-  const MessageCard({super.key,required this.message});
+  final ChatUser user;
+  const MessageCard({super.key,required this.message,required this.user});
 
   @override
   State<MessageCard> createState() => _MessageCardState();
@@ -114,7 +116,35 @@ class _MessageCardState extends State<MessageCard> {
                     color: sharedPreferences.sp.getBool('isDark')??false?Colors.lightGreen.shade200:Colors.green
                   )
                 ),
-                child: showMsg()
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    widget.message.type==Type.text && widget.message.replyTo.trim().isNotEmpty?
+                    Container(
+                        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.025, horizontal: 15),
+                        decoration: BoxDecoration(
+                            color: sharedPreferences.sp.getBool('isDark')??false?Colors.black54:Colors.white54,
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            border: Border.all(
+                                color: sharedPreferences.sp.getBool('isDark')??false?Colors.black12:Colors.white12
+                            )
+                        ),
+                        child: Text(
+                          APIs.encrypted.decrypt(Encrypted.fromBase64(widget.message.replyTo),iv: Secret.iv),
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
+                        )
+                    ):
+                    Container(
+                      width: 0,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    showMsg(),
+                  ],
+                )
               ):
               Container(
                 margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.04, horizontal: 18),
@@ -170,7 +200,35 @@ class _MessageCardState extends State<MessageCard> {
                     color: sharedPreferences.sp.getBool('isDark')??false?Colors.purple.shade100:Colors.purple
                 )
             ),
-            child: showMsg()
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                widget.message.type==Type.text && widget.message.replyTo.trim().isNotEmpty?
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.025, horizontal: 15),
+                  decoration: BoxDecoration(
+                    color: sharedPreferences.sp.getBool('isDark')??false?Colors.black54:Colors.white54,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    border: Border.all(
+                      color: sharedPreferences.sp.getBool('isDark')??false?Colors.black12:Colors.white12
+                    )
+                  ),
+                  child: Text(
+                    APIs.encrypted.decrypt(Encrypted.fromBase64(widget.message.replyTo),iv: Secret.iv),
+                    style: TextStyle(
+                      fontSize: 14,
+                    ),
+                  )
+                ):
+                Container(
+                  width: 0,
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                showMsg(),
+              ],
+            )
           ):
           Container(
             margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.04, horizontal: 18),
@@ -207,6 +265,7 @@ class _MessageCardState extends State<MessageCard> {
 
   void showBottomSheet(){
     TextEditingController updatedMessage=TextEditingController();
+    TextEditingController replyMessage=TextEditingController();
     updatedMessage.text=APIs.encrypted.decrypt(Encrypted.fromBase64(widget.message.msg),iv: Secret.iv);
     showModalBottomSheet(
       context: context,
@@ -305,6 +364,84 @@ class _MessageCardState extends State<MessageCard> {
                     }
                   );
                 }),
+                listItem(Icon(Icons.reply,color: Colors.purple), "Reply", () async{
+                  Navigator.of(context).pop();
+                  showDialog(
+                      context: context,
+                      builder: (context){
+                        return AlertDialog(
+                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          title: Row(
+                            children: [
+                              Icon(Icons.reply),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text('Reply',
+                                  style:TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500
+                                  )
+                              )
+                            ],
+                          ),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(updatedMessage.text),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextField(
+                                controller: replyMessage,
+                                cursorColor: Colors.purple.shade50,
+                                textCapitalization: TextCapitalization.sentences,
+                                maxLines: 3,
+                                minLines: 1,
+                                decoration: InputDecoration(
+                                  hintText: 'type your reply',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                          color: Colors.purple
+                                      )
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                          color: Colors.purple
+                                      )
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: (){
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('Cancel',style: TextStyle(color:Theme.of(context).colorScheme.secondary)),
+                            ),
+                            TextButton(
+                              onPressed: (){
+                                if(replyMessage.text.toString().trim().isNotEmpty){
+                                  APIs.sendReply(widget.user, replyMessage.text.trim(), updatedMessage.text.trim());
+                                }else{
+                                  Utils.showSnackBar(context, 'Empty reply');
+                                }
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('Send',style: TextStyle(color:Theme.of(context).colorScheme.secondary)),
+                            )
+                          ],
+                        );
+                      }
+                  );
+                }),
                 listItem(Icon(Icons.delete,color: Colors.red), "Delete", () async{
                   APIs.deleteMessage(widget.message).then((_){
                     Navigator.of(context).pop();
@@ -338,6 +475,84 @@ class _MessageCardState extends State<MessageCard> {
                     Navigator.of(context).pop();
                     Utils.showSnackBar(context, "Text copied successfully");
                   });
+                }),
+                listItem(Icon(Icons.reply,color: Colors.purple), "Reply", () async{
+                  Navigator.of(context).pop();
+                  showDialog(
+                      context: context,
+                      builder: (context){
+                        return AlertDialog(
+                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          title: Row(
+                            children: [
+                              Icon(Icons.reply),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text('Reply',
+                                  style:TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500
+                                  )
+                              )
+                            ],
+                          ),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(updatedMessage.text),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              TextField(
+                                controller: replyMessage,
+                                cursorColor: Colors.purple.shade50,
+                                textCapitalization: TextCapitalization.sentences,
+                                maxLines: 3,
+                                minLines: 1,
+                                decoration: InputDecoration(
+                                  hintText: 'type your reply',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                          color: Colors.purple
+                                      )
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                          color: Colors.purple
+                                      )
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: (){
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('Cancel',style: TextStyle(color:Theme.of(context).colorScheme.secondary)),
+                            ),
+                            TextButton(
+                              onPressed: (){
+                                if(replyMessage.text.toString().trim().isNotEmpty){
+                                  APIs.sendReply(widget.user, replyMessage.text.trim(), updatedMessage.text.trim());
+                                }else{
+                                  Utils.showSnackBar(context, 'Empty reply');
+                                }
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('Send',style: TextStyle(color:Theme.of(context).colorScheme.secondary)),
+                            )
+                          ],
+                        );
+                      }
+                  );
                 }),
                 Divider(
                   color: Theme.of(context).colorScheme.inversePrimary,

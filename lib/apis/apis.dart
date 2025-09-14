@@ -122,7 +122,8 @@ class APIs{
         read: '',
         type: Type.text,
         fromId: auth.currentUser!.uid,
-        sent: time
+        sent: time,
+        replyTo: ''
     );
     await firestore.collection('chats/${getConversationId(receiver.id)}/messages/').doc(time).set(message.toJson()).then((_){
       pushNotification(receiver, msg);
@@ -137,7 +138,8 @@ class APIs{
         read: '',
         type: Type.image,
         fromId: auth.currentUser!.uid,
-        sent: time
+        sent: time,
+        replyTo: '',
     );
     await firestore.collection('chats/${getConversationId(receiver.id)}/messages/').doc(time).set(message.toJson()).then((_){
       pushNotification(receiver, 'image');
@@ -152,7 +154,8 @@ class APIs{
         read: '',
         type: Type.document,
         fromId: auth.currentUser!.uid,
-        sent: time
+        sent: time,
+        replyTo: ''
     );
     await firestore.collection('chats/${getConversationId(receiver.id)}/messages/').doc(time).set(message.toJson()).then((_){
       pushNotification(receiver, 'document');
@@ -167,10 +170,27 @@ class APIs{
         read: '',
         type: Type.audio,
         fromId: auth.currentUser!.uid,
-        sent: time
+        sent: time,
+        replyTo: ''
     );
     await firestore.collection('chats/${getConversationId(receiver.id)}/messages/').doc(time).set(message.toJson()).then((_){
       pushNotification(receiver, 'audio');
+    });
+  }
+
+  static Future<void> sendReply(ChatUser receiver,String msg,String replyTo) async{
+    String time=DateTime.now().millisecondsSinceEpoch.toString();
+    Message message=Message(
+        toId: receiver.id,
+        msg: encrypted.encrypt(msg, iv:Secret.iv).base64,
+        read: '',
+        type: Type.text,
+        fromId: auth.currentUser!.uid,
+        sent: time,
+        replyTo: encrypted.encrypt(replyTo, iv:Secret.iv).base64
+    );
+    await firestore.collection('chats/${getConversationId(receiver.id)}/messages/').doc(time).set(message.toJson()).then((_){
+      pushNotification(receiver, msg);
     });
   }
 
